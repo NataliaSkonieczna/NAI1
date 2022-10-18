@@ -28,23 +28,19 @@ std::random_device rd;
 std::mt19937 mt_generator(rd());
 
 double hill_climbing(std::function<double(double, double)> &f,domain_t minimal_d, domain_t maximal_d, int max_iterations=1000) {
-    double current_p(minimal_d.size());
-    double current_p_n(minimal_d.size());
-    for (int i = 0; i < minimal_d.size(); i++) {
-        std::uniform_real_distribution<double> dist(minimal_d[i], maximal_d[i]);
-        current_p = dist(mt_generator);
-        current_p_n = dist(mt_generator);
-    }
+
+    std::uniform_real_distribution<double> dist(minimal_d[0], maximal_d[0]);
+    double current_p = f(minimal_d[0], maximal_d[0]);
+    double new_p(minimal_d.size());
+    double new_p2(minimal_d.size());
+
     for (int iteration = 0; iteration < max_iterations; iteration++) {
-        double new_p(minimal_d.size());
 
-        for (int i = 0; i < minimal_d.size(); i++) {
-            std::uniform_real_distribution<double> dist(-1.0/128.0, 1.0/128.0);
-            new_p = current_p + dist(mt_generator);
+        new_p = dist(mt_generator);
+        new_p2 = dist(mt_generator);
 
-        }
-        if (f(current_p,current_p_n) > new_p ){
-            current_p = new_p;
+        if (f(new_p,new_p2) < current_p){
+            current_p = f(new_p,new_p2);
         }
     }
     return current_p;
@@ -64,7 +60,7 @@ int main() {
     std::cout << "best x = " << best_point << std::endl;
 
 
-    std::function<double(double,double)> beale = [](double x, double y){return pow(1.5-x+x*y,2) + pow(2.25-x+sqrt(x*y),2)+pow(2.625-x+std::pow(x*y, 1/3.),2);};
+    std::function<double(double,double)> beale = [](double x, double y){return pow(1.5 - x + (x * y), 2) + pow(2.25 - x + x * pow(y,2), 2) + pow(2.625 - x + (x * pow(y, 3)), 2);};
     std::cout << "best x = " << hill_climbing(beale,{-4.5},{4.5},10000) << std::endl;
 
     std::function<double(double,double)> booth = [](double x, double y){return pow(x+2*y-7,2)+pow(2*x+y-5,2);};
