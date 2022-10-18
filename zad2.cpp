@@ -27,22 +27,29 @@ using domain_t = std::vector<double>;
 std::random_device rd;
 std::mt19937 mt_generator(rd());
 
-double hill_climbing(std::function<double(double, double)> &f,domain_t minimal_d, domain_t maximal_d, int max_iterations) {
+double hill_climbing(std::function<double(double, double)> &f,domain_t minimal_d, domain_t maximal_d, int max_iterations=1000) {
+    double current_p(minimal_d.size());
+    double current_p_n(minimal_d.size());
     for (int i = 0; i < minimal_d.size(); i++) {
         std::uniform_real_distribution<double> dist(minimal_d[i], maximal_d[i]);
-        double best_p = f(minimal_d[i],maximal_d[i]);
+        current_p = dist(mt_generator);
+        current_p_n = dist(mt_generator);
+    }
+    for (int iteration = 0; iteration < max_iterations; iteration++) {
+        double new_p(minimal_d.size());
 
-        for(int j=0; j<max_iterations-1 ;j++){
+        for (int i = 0; i < minimal_d.size(); i++) {
+            std::uniform_real_distribution<double> dist(-1.0/128.0, 1.0/128.0);
+            new_p = current_p + dist(mt_generator);
 
-            double current_p = dist(mt_generator);
-
-            if(current_p < current_p){
-                current_p = best_p;
-            }
+        }
+        if (f(current_p,current_p_n) > new_p ){
+            current_p = new_p;
         }
     }
-    return 0;
+    return current_p;
 }
+
 
 int main() {
 
@@ -61,15 +68,13 @@ int main() {
     std::cout << "best x = " << hill_climbing(beale,{-4.5},{4.5},10000) << std::endl;
 
     std::function<double(double,double)> booth = [](double x, double y){return pow(x+2*y-7,2)+pow(2*x+y-5,2);};
-    std::cout << "best x = " << hill_climbing(booth,{-10},{10},10000) << std::endl;
+    std::cout << "best x = " << hill_climbing(booth,{-4.5},{4.5},10000) << std::endl;
 
     std::function<double(double,double)> matyas = [](double x, double y){return 0.26*((x*x)+(y*y))-0.48*x*y;};
-    std::cout << "best x = " << hill_climbing(matyas,{-10},{10},10000) << std::endl;
+    std::cout << "best x = " << hill_climbing(matyas,{-4.5},{4.5},10000) << std::endl;
 
-    std::function<double(double,double)> gold = [](double x, double y){return (1+(pow(x+y+1,2)*(19-14*x+6*x*y+3*y*y))*(30+pow(2*x-3*y,2)*(18-32*x+12*x*x+48*y-36*x*y+27*y*y)));};
-    std::cout << "best x = " << hill_climbing(gold,{-2},{2},10000) << std::endl;
+
 
 
     return 0;
 }
-
