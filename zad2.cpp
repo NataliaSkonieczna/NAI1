@@ -40,7 +40,7 @@ domain_t hill_climbing(const std::function<double(domain_t,domain_t)> &f, domain
             std::uniform_real_distribution<double> dist(-1.0/128.0, 1.0/128.0);
             new_p[i] = current_p[i] + dist(mt_generator);
         }
-        if (f(current_p,current_p) > f(new_p,new_p)) {
+        if (f(current_p,new_p) > f(new_p,current_p)) {
             current_p = new_p;
         }
     }
@@ -69,6 +69,11 @@ int main() {
     auto booth = [](domain_t x, domain_t y) {return sqrt(x[0]+2*x[0]-7)+ sqrt(2*x[0]+y[0]-5);};
     auto best3 = hill_climbing(beale, {-10},{10},10000);
     std::cout << "best x = " << best3[0] << std::endl;
+
+
+    auto matyas = [](domain_t x, domain_t y) {return 0.26*(sqrt(x[0])+ sqrt(y[0])-0.48*x[0]*y[0]);};
+    auto best4 = hill_climbing(matyas, {-10},{10},10000);
+    std::cout << "best x = " << best4[0] << std::endl;
 
 
     return 0;
