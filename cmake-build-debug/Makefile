@@ -128,29 +128,29 @@ NAI1/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\NAI1.dir\build.make CMakeFiles/NAI1.dir/build
 .PHONY : NAI1/fast
 
-zad1.obj: zad1.cpp.obj
-.PHONY : zad1.obj
+zad2.obj: zad2.cpp.obj
+.PHONY : zad2.obj
 
 # target to build an object file
-zad1.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\NAI1.dir\build.make CMakeFiles/NAI1.dir/zad1.cpp.obj
-.PHONY : zad1.cpp.obj
+zad2.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\NAI1.dir\build.make CMakeFiles/NAI1.dir/zad2.cpp.obj
+.PHONY : zad2.cpp.obj
 
-zad1.i: zad1.cpp.i
-.PHONY : zad1.i
+zad2.i: zad2.cpp.i
+.PHONY : zad2.i
 
 # target to preprocess a source file
-zad1.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\NAI1.dir\build.make CMakeFiles/NAI1.dir/zad1.cpp.i
-.PHONY : zad1.cpp.i
+zad2.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\NAI1.dir\build.make CMakeFiles/NAI1.dir/zad2.cpp.i
+.PHONY : zad2.cpp.i
 
-zad1.s: zad1.cpp.s
-.PHONY : zad1.s
+zad2.s: zad2.cpp.s
+.PHONY : zad2.s
 
 # target to generate assembly for a file
-zad1.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\NAI1.dir\build.make CMakeFiles/NAI1.dir/zad1.cpp.s
-.PHONY : zad1.cpp.s
+zad2.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\NAI1.dir\build.make CMakeFiles/NAI1.dir/zad2.cpp.s
+.PHONY : zad2.cpp.s
 
 # Help Target
 help:
@@ -161,9 +161,9 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... NAI1
-	@echo ... zad1.obj
-	@echo ... zad1.i
-	@echo ... zad1.s
+	@echo ... zad2.obj
+	@echo ... zad2.i
+	@echo ... zad2.s
 .PHONY : help
 
 

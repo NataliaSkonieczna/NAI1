@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "E:/github/NAI1/zad1.cpp" "CMakeFiles/NAI1.dir/zad1.cpp.obj" "gcc" "CMakeFiles/NAI1.dir/zad1.cpp.obj.d"
+  "E:/github/NAI1/zad2.cpp" "CMakeFiles/NAI1.dir/zad2.cpp.obj" "gcc" "CMakeFiles/NAI1.dir/zad2.cpp.obj.d"
   )
 
 # Targets to which this target links.

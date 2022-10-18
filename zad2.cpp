@@ -28,7 +28,7 @@ using domain_t = std::vector<double>;
 std::random_device rd;
 std::mt19937 mt_generator(rd());
 
-domain_t hill_climbing(const std::function<double(domain_t)> &f, domain_t minimal_d, domain_t maximal_d, int max_iterations) {
+domain_t hill_climbing(const std::function<double(domain_t,domain_t)> &f, domain_t minimal_d, domain_t maximal_d, int max_iterations) {
     domain_t current_p(minimal_d.size());
     for (int i = 0; i < minimal_d.size(); i++) {
         std::uniform_real_distribution<double> dist(minimal_d[i], maximal_d[i]);
@@ -40,7 +40,7 @@ domain_t hill_climbing(const std::function<double(domain_t)> &f, domain_t minima
             std::uniform_real_distribution<double> dist(-1.0/128.0, 1.0/128.0);
             new_p[i] = current_p[i] + dist(mt_generator);
         }
-        if (f(current_p) > f(new_p)) {
+        if (f(current_p,current_p) > f(new_p,new_p)) {
             current_p = new_p;
         }
     }
@@ -61,12 +61,12 @@ int main() {
     auto best_point = brute_force(sphere_f, sphere_generator);
     std::cout << "best x = " << best_point << std::endl;
 
-    auto beale = [](domain_t x) {return sqrt(1.5-x[0]+x[0]*x[1]) + sqrt(2.25-x[0]+sqrt(x[0]*x[1]))+sqrt(2.625-x[0]+cbrt(x[0]*x[1]));};
+    auto beale = [](domain_t x, domain_t y) {return sqrt(1.5-x[0]+x[0]*y[0]) + sqrt(2.25-x[0]+sqrt(x[0]*y[0]))+sqrt(2.625-x[0]+cbrt(x[0]*y[0]));};
     auto best2 = hill_climbing(beale, {-4.5},{4.5},10000);
     std::cout << "best x = " << best2[0] << std::endl;
 
 
-    auto booth = [](domain_t x) {return sqrt(x[0]+2*x[0]-7)+ sqrt(2*x[0]+x[1]-5);};
+    auto booth = [](domain_t x, domain_t y) {return sqrt(x[0]+2*x[0]-7)+ sqrt(2*x[0]+y[0]-5);};
     auto best3 = hill_climbing(beale, {-10},{10},10000);
     std::cout << "best x = " << best3[0] << std::endl;
 

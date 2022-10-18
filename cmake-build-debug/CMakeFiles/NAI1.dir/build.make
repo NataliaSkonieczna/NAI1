@@ -68,28 +68,28 @@ include CMakeFiles/NAI1.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/NAI1.dir/flags.make
 
-CMakeFiles/NAI1.dir/zad1.cpp.obj: CMakeFiles/NAI1.dir/flags.make
-CMakeFiles/NAI1.dir/zad1.cpp.obj: ../zad1.cpp
-CMakeFiles/NAI1.dir/zad1.cpp.obj: CMakeFiles/NAI1.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=E:\github\NAI1\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/NAI1.dir/zad1.cpp.obj"
-	"E:\clion\CLion 2021.3.3\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/NAI1.dir/zad1.cpp.obj -MF CMakeFiles\NAI1.dir\zad1.cpp.obj.d -o CMakeFiles\NAI1.dir\zad1.cpp.obj -c E:\github\NAI1\zad1.cpp
+CMakeFiles/NAI1.dir/zad2.cpp.obj: CMakeFiles/NAI1.dir/flags.make
+CMakeFiles/NAI1.dir/zad2.cpp.obj: ../zad2.cpp
+CMakeFiles/NAI1.dir/zad2.cpp.obj: CMakeFiles/NAI1.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=E:\github\NAI1\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/NAI1.dir/zad2.cpp.obj"
+	"E:\clion\CLion 2021.3.3\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/NAI1.dir/zad2.cpp.obj -MF CMakeFiles\NAI1.dir\zad2.cpp.obj.d -o CMakeFiles\NAI1.dir\zad2.cpp.obj -c E:\github\NAI1\zad2.cpp
 
-CMakeFiles/NAI1.dir/zad1.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/NAI1.dir/zad1.cpp.i"
-	"E:\clion\CLion 2021.3.3\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E E:\github\NAI1\zad1.cpp > CMakeFiles\NAI1.dir\zad1.cpp.i
+CMakeFiles/NAI1.dir/zad2.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/NAI1.dir/zad2.cpp.i"
+	"E:\clion\CLion 2021.3.3\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E E:\github\NAI1\zad2.cpp > CMakeFiles\NAI1.dir\zad2.cpp.i
 
-CMakeFiles/NAI1.dir/zad1.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/NAI1.dir/zad1.cpp.s"
-	"E:\clion\CLion 2021.3.3\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S E:\github\NAI1\zad1.cpp -o CMakeFiles\NAI1.dir\zad1.cpp.s
+CMakeFiles/NAI1.dir/zad2.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/NAI1.dir/zad2.cpp.s"
+	"E:\clion\CLion 2021.3.3\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S E:\github\NAI1\zad2.cpp -o CMakeFiles\NAI1.dir\zad2.cpp.s
 
 # Object files for target NAI1
 NAI1_OBJECTS = \
-"CMakeFiles/NAI1.dir/zad1.cpp.obj"
+"CMakeFiles/NAI1.dir/zad2.cpp.obj"
 
 # External object files for target NAI1
 NAI1_EXTERNAL_OBJECTS =
 
-NAI1.exe: CMakeFiles/NAI1.dir/zad1.cpp.obj
+NAI1.exe: CMakeFiles/NAI1.dir/zad2.cpp.obj
 NAI1.exe: CMakeFiles/NAI1.dir/build.make
 NAI1.exe: CMakeFiles/NAI1.dir/linklibs.rsp
 NAI1.exe: CMakeFiles/NAI1.dir/objects1.rsp
