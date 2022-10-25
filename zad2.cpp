@@ -15,20 +15,6 @@
 /* f -> funkcja, domain ->dziedzina*/
 auto brute_force = [](auto f, auto domain) {
 
-    auto current_p = domain();
-    auto best_point = current_p;
-    try {
-        while (true) {
-            if (f(current_p) < f(best_point)) {
-                best_point = current_p;
-            }
-            current_p = domain();
-        }
-    } catch (std::exception &e) {
-    }
-    return best_point;
-};
-
 
 using domain_t = std::vector<double>;
 std::random_device rd;
@@ -138,7 +124,7 @@ int main(int argc) {
     outfile.open("file.txt",std::ios_base::app);
     outfile<<std::endl;
     outfile.close();
-    
+
     simulatedAnnealingCout();
 
 }
