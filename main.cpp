@@ -77,7 +77,7 @@ auto brute_force = [](std::function<double(double, double)> &f, domain_t minimal
     return best_point;
 };
 
-double simulatedAnnealing(std::function<double(double, double)> &f,domain_t minimal_d, domain_t maximal_d, int max_iterations, double temperature) {
+double simulatedAnnealing(std::function<double(double, double)> &f,domain_t minimal_d, domain_t maximal_d, int max_iterations) {
 
     auto t1 = high_resolution_clock::now();
 
@@ -86,19 +86,28 @@ double simulatedAnnealing(std::function<double(double, double)> &f,domain_t mini
 
     double s = f(minimal_d[0], maximal_d[0]);
     double s2 = f(minimal_d[0], maximal_d[0]);
-    std::vector<std::pair<double,double>> myvec;
+    std::vector<double> myvec;
+    myvec.push_back(s);
 
 
-    for (int iterations = 1; iterations < max_iterations; ++iterations) {
+    for (int iterations = 0; iterations < max_iterations; ++iterations) {
         double tk = f(minimal_d[0], maximal_d[0]);
         double tk2 = f(minimal_d[0], maximal_d[0]);
 
         if (f(tk, tk2) < f(s, s2)) {
             s =  f(tk, tk2);
+            myvec.push_back(s);
         } else {
-            if (u < exp(-(fabs(f(tk, tk2) - f(s, s2)) / ((1 / log(iterations))*temperature)))) {
+            if (u < exp(-(fabs(f(tk, tk2) - f(s, s2))/((1/log(iterations)))))) {
                 s =  f(tk, tk2);
+                myvec.push_back(s);
             }
+        }
+
+    }
+    for(int j=0;myvec.size()>=j;j++) {
+        if (myvec[j] < s) {
+            s = myvec[j];
         }
     }
 
@@ -106,7 +115,6 @@ double simulatedAnnealing(std::function<double(double, double)> &f,domain_t mini
     auto ms_int = duration_cast<milliseconds>(t2 - t1);
     duration<double, std::milli> ms_double = t2 - t1;
     std::cout << std::endl << "time = " << ms_double.count() << "ms\n";
-
     return s;
 }
 
@@ -134,9 +142,9 @@ void bruteForceCout(){
 }
 
 void simulatedAnnealingCout(){
-    std::cout << simulatedAnnealing(beale, {-4.5}, {4.5}, 10000,4) << std::endl;
-    std::cout << simulatedAnnealing(cross, {-10}, {10}, 10000,4) << std::endl;
-    std::cout << simulatedAnnealing(himmelblau, {-5}, {5}, 10000,4) << std::endl;
+    std::cout << simulatedAnnealing(beale, {-4.5}, {4.5}, 10000) << std::endl;
+    std::cout << simulatedAnnealing(cross, {-10}, {10}, 10000) << std::endl;
+    std::cout << simulatedAnnealing(himmelblau, {-5}, {5}, 10000) << std::endl;
 
 }
 
@@ -177,6 +185,6 @@ int main(int argc, char **argv) {
 
 //brute force dziala
 //hill climb dziala
-//anne nie dziala
+//anne nie dziala ?????
 
 }
