@@ -84,7 +84,7 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="E:/github/NAI1/zad2.cpp">
+		<Unit filename="E:/github/NAI1/main.cpp">
 			<Option target="NAI1"/>
 		</Unit>
 		<Unit filename="E:/github/NAI1/CMakeLists.txt">
