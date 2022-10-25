@@ -119,14 +119,12 @@ double hill_climbing(std::function<double(double, double)> &f,domain_t minimal_d
     };
 
 void hillClimbCout () {
-
     std::cout << hill_climbing(beale, {-4.5}, {4.5}, 10000) << std::endl;
     std::cout << hill_climbing(cross, {-10}, {10}, 10000) << std::endl;
     std::cout << hill_climbing(matyas, {-4.5}, {4.5}, 10000) << std::endl;
 }
 
 void simulatedAnnealingCout(){
-
     std::cout << simulatedAnnealing(beale, {-4.5}, {4.5}, 10000,4) << std::endl;
     std::cout << simulatedAnnealing(cross, {-10}, {10}, 10000,4) << std::endl;
     std::cout << simulatedAnnealing(matyas, {-4.5}, {4.5}, 10000,4) << std::endl;
@@ -134,18 +132,43 @@ void simulatedAnnealingCout(){
 }
 
 void bruteForceCout(){
-
     std::cout << brute_force(beale, {-4.5}, {4.5},10000) << std::endl;
     std::cout << brute_force(cross, {-10}, {10},10000) << std::endl;
     std::cout << brute_force(matyas, {-4.5}, {4.5},10000) << std::endl;
 
 }
 
-int main(int argc) {
+int main(int argc, char **argv) {
 
     outfile.open("file.txt",std::ios_base::app);
     outfile<<std::endl;
     outfile.close();
+
+    std::string array[3] = {"1 Hill Climb","2 Brute Force","3 Simulated Annealing"};
+
+    try {
+        std::vector<std::string> argument(argv, argv + argc);
+        auto selected_f = argument.at(1);
+
+        switch(std::stoi(argument.at(1))){
+            case 1:
+                hillClimbCout();
+                break;
+            case 2:
+                bruteForceCout();
+                break;
+            case 3:
+                simulatedAnnealingCout();
+                break;
+        }
+
+    } catch (std::out_of_range aor) {
+        std::cout << "podaj argument. Dostepne to: "<<std::endl;
+        for (int i=0;i<=2;i++) std::cout<< array[i]<<std::endl;
+        std::cout << std::endl;
+    }
+
+
 
 //brute force dziala
 //hill climb dziala
