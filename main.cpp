@@ -77,8 +77,6 @@ auto brute_force = [](std::function<double(double, double)> &f, domain_t minimal
     return best_point;
 };
 
-
-
 double simulatedAnnealing(std::function<double(double, double)> &f,domain_t minimal_d, domain_t maximal_d, int max_iterations, double temperature) {
 
     auto t1 = high_resolution_clock::now();
