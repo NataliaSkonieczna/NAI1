@@ -21,6 +21,25 @@ std::mt19937 mt_generator(rd());
 std::ofstream outfile("file.txt");
 using myfun = std::function<double(double, double)>;
 
+auto brute_force = [](std::function<double(double, double)> &f, domain_t minimal_d, domain_t maximal_d, int max_iterations) {
+
+    std::uniform_real_distribution<double> dist(minimal_d[0], maximal_d[0]);
+
+    auto current_p = dist(mt_generator);
+    auto current_p2 = dist(mt_generator);
+    auto best_point = f(current_p,current_p2);
+
+        for(int i=0;i<max_iterations;i++) {
+            if (f(current_p,current_p2) < best_point) {
+                best_point = f(current_p,current_p2);
+            }
+            current_p = dist(mt_generator);
+            current_p2 = dist(mt_generator);
+        }
+    return best_point;
+};
+
+
 
 double simulatedAnnealing(std::function<double(double, double)> &f,domain_t minimal_d, domain_t maximal_d, int max_iterations, double temperature) {
 
@@ -33,15 +52,14 @@ double simulatedAnnealing(std::function<double(double, double)> &f,domain_t mini
 
 
     for (int iterations = 1; iterations < max_iterations; ++iterations) {
-
         double tk = f(minimal_d[0], maximal_d[0]);
         double tk2 = f(minimal_d[0], maximal_d[0]);
 
         if (f(tk, tk2) < f(s, s2)) {
-            s = tk;
+            s =  f(tk, tk2);
         } else {
             if (u < exp(-(fabs(f(tk, tk2) - f(s, s2)) / ((1 / log(iterations))*temperature)))) {
-                s = tk;
+                s =  f(tk, tk2);
             }
         }
     }
@@ -84,10 +102,7 @@ double hill_climbing(std::function<double(double, double)> &f,domain_t minimal_d
             outfile<<ms_double.count()<< " " << current_p << std::endl;
             outfile.close();
         }
-
-
     }
-
 
     std::cout << "best x = ";
     return current_p;
@@ -106,15 +121,23 @@ double hill_climbing(std::function<double(double, double)> &f,domain_t minimal_d
 void hillClimbCout () {
 
     std::cout << hill_climbing(beale, {-4.5}, {4.5}, 10000) << std::endl;
-    std::cout << hill_climbing(cross, {-4.5}, {4.5}, 10000) << std::endl;
+    std::cout << hill_climbing(cross, {-10}, {10}, 10000) << std::endl;
     std::cout << hill_climbing(matyas, {-4.5}, {4.5}, 10000) << std::endl;
 }
 
 void simulatedAnnealingCout(){
 
     std::cout << simulatedAnnealing(beale, {-4.5}, {4.5}, 10000,4) << std::endl;
-    std::cout << simulatedAnnealing(cross, {-4.5}, {4.5}, 10000,4) << std::endl;
+    std::cout << simulatedAnnealing(cross, {-10}, {10}, 10000,4) << std::endl;
     std::cout << simulatedAnnealing(matyas, {-4.5}, {4.5}, 10000,4) << std::endl;
+
+}
+
+void bruteForceCout(){
+
+    std::cout << brute_force(beale, {-4.5}, {4.5},10000) << std::endl;
+    std::cout << brute_force(cross, {-10}, {10},10000) << std::endl;
+    std::cout << brute_force(matyas, {-4.5}, {4.5},10000) << std::endl;
 
 }
 
@@ -124,6 +147,8 @@ int main(int argc) {
     outfile<<std::endl;
     outfile.close();
 
-    simulatedAnnealingCout();
+//brute force dziala
+//hill climb dziala
+//anne nie dziala
 
 }
