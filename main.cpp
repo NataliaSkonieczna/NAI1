@@ -11,6 +11,8 @@ using domain_t = std::vector<double>;
 std::random_device rd;
 std::mt19937 mt_generator(rd());
 std::ofstream outfile("file.txt");
+std::ofstream outfile2("file2.txt");
+std::ofstream outfile3("file3.txt");
 using myfun = std::function<double(double, double)>;
 using std::chrono::high_resolution_clock;
 using std::chrono::duration_cast;
@@ -19,7 +21,7 @@ using std::chrono::milliseconds;
 
 double hill_climbing(std::function<double(double, double)> &f,domain_t minimal_d, domain_t maximal_d, int max_iterations) {
 
-    int times= max_iterations/1;
+    int times= max_iterations/25;
 
     auto t1 = high_resolution_clock::now();
     std::uniform_real_distribution<double> dist(minimal_d[0], maximal_d[0]);
@@ -38,17 +40,16 @@ double hill_climbing(std::function<double(double, double)> &f,domain_t minimal_d
         }
 
         if(iteration % times == 0){
-            auto t2 = high_resolution_clock::now();
-            auto ms_int = duration_cast<milliseconds>(t2 - t1);
-            duration<double, std::milli> ms_double = t2 - t1;
-            std::cout << std::endl << "time = " << ms_double.count() << "ms\n";
-
             outfile.open("file.txt",std::ios_base::app);
-            outfile<<ms_double.count()<< " " << current_p << std::endl;
+            outfile << current_p << std::endl;
             outfile.close();
         }
     }
 
+    auto t2 = high_resolution_clock::now();
+    auto ms_int = duration_cast<milliseconds>(t2 - t1);
+    duration<double, std::milli> ms_double = t2 - t1;
+    std::cout << std::endl << "time = " << ms_double.count() << "ms\n";
     std::cout << "best x = ";
     return current_p;
 }
@@ -56,7 +57,7 @@ double hill_climbing(std::function<double(double, double)> &f,domain_t minimal_d
 
 auto brute_force = [](std::function<double(double, double)> &f, domain_t minimal_d, domain_t maximal_d, int max_iterations) {
 
-    int times= max_iterations/1;
+    int times= max_iterations/25;
 
     auto t1 = high_resolution_clock::now();
     std::uniform_real_distribution<double> dist(minimal_d[0], maximal_d[0]);
@@ -73,25 +74,24 @@ auto brute_force = [](std::function<double(double, double)> &f, domain_t minimal
             current_p2 = dist(mt_generator);
 
             if(iterations % times == 0) {
-                auto t2 = high_resolution_clock::now();
-                auto ms_int = duration_cast<milliseconds>(t2 - t1);
-                duration<double, std::milli> ms_double = t2 - t1;
-                std::cout << std::endl << "time = " << ms_double.count() << "ms\n";
-                outfile.open("file.txt", std::ios_base::app);
-                outfile << ms_double.count() << " " << current_p << std::endl;
-                outfile.close();
+                outfile2.open("file2.txt", std::ios_base::app);
+                outfile2 << best_point << std::endl;
+                outfile2.close();
             }
 
         }
 
-
+    auto t2 = high_resolution_clock::now();
+    auto ms_int = duration_cast<milliseconds>(t2 - t1);
+    duration<double, std::milli> ms_double = t2 - t1;
+    std::cout << std::endl << "time = " << ms_double.count() << "ms\n";
     std::cout << "best x = ";
     return best_point;
 };
 
 double simulatedAnnealing(std::function<double(double, double)> &f,domain_t minimal_d, domain_t maximal_d, int max_iterations) {
 
-    int times= max_iterations/1;
+    int times= max_iterations/25;
 
     auto t1 = high_resolution_clock::now();
 
@@ -119,12 +119,19 @@ double simulatedAnnealing(std::function<double(double, double)> &f,domain_t mini
             }
         }
 
+        if(iterations % times == 0) {
+            outfile3.open("file3.txt", std::ios_base::app);
+            outfile3 << s << std::endl;
+            outfile3.close();
+        }
+
     }
     for(int j=0;myvec.size()>=j;j++) {
-        if (myvec[j] < s) {
-            s = myvec[j];
-        }
+            if (myvec[j] < s) {
+                s = myvec[j];
+            }
     }
+
 
     auto t2 = high_resolution_clock::now();
     auto ms_int = duration_cast<milliseconds>(t2 - t1);
@@ -164,13 +171,27 @@ void simulatedAnnealingCout(){
 
 }
 
+void plus() {
+    for (int i = 25; i > 0; i--) {
+        std::cout << hill_climbing(cross, {-10}, {10}, 10000) << std::endl;
+        std::cout << brute_force(cross, {-10}, {10}, 10000) << std::endl;
+        std::cout << simulatedAnnealing(cross, {-10}, {10}, 10000) << std::endl;
+    }
+}
+
 int main(int argc, char **argv) {
 
     outfile.open("file.txt",std::ios_base::app);
+    outfile.open("file2.txt",std::ios_base::app);
+    outfile.open("file3.txt",std::ios_base::app);
     outfile<<std::endl;
+    outfile2<<std::endl;
+    outfile3<<std::endl;
     outfile.close();
+    outfile2.close();
+    outfile3.close();
 
-    std::string array[4] = {"1 Hill Climb","2 Brute Force","3 Simulated Annealing","4 Wszystkie"};
+    std::string array[5] = {"1 Hill Climb","2 Brute Force","3 Simulated Annealing","4 Wszystkie","5 Plus"};
 
     try {
         std::vector<std::string> argument(argv, argv + argc);
@@ -198,6 +219,9 @@ int main(int argc, char **argv) {
                 std::cout<<"Simulated Annealing"<<std::endl;
                 simulatedAnnealingCout();
                 break;
+            case 5:
+                plus();
+                break;
         }
 
     } catch (std::out_of_range aor) {
@@ -205,11 +229,5 @@ int main(int argc, char **argv) {
         for (int i=0;i<=2;i++) std::cout<< array[i]<<std::endl;
         std::cout << std::endl;
     }
-
-
-
-//brute force dziala
-//hill climb dziala
-//anne nie dziala ?????
 
 }
