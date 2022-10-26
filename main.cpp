@@ -82,6 +82,7 @@ double simulatedAnnealing(std::function<double(double, double)> &f,domain_t mini
     auto t1 = high_resolution_clock::now();
 
     std::uniform_real_distribution<double> uk(0, 1);
+    std::uniform_real_distribution<double> dom(minimal_d[0],maximal_d[0]);
     double u = uk(mt_generator);
 
     double s = f(minimal_d[0], maximal_d[0]);
@@ -91,8 +92,8 @@ double simulatedAnnealing(std::function<double(double, double)> &f,domain_t mini
 
 
     for (int iterations = 0; iterations < max_iterations; ++iterations) {
-        double tk = f(minimal_d[0], maximal_d[0]);
-        double tk2 = f(minimal_d[0], maximal_d[0]);
+        double tk = dom(mt_generator);
+        double tk2 = dom(mt_generator);
 
         if (f(tk, tk2) < f(s, s2)) {
             s =  f(tk, tk2);
@@ -154,13 +155,14 @@ int main(int argc, char **argv) {
     outfile<<std::endl;
     outfile.close();
 
-    std::string array[3] = {"1 Hill Climb","2 Brute Force","3 Simulated Annealing"};
+    std::string array[4] = {"1 Hill Climb","2 Brute Force","3 Simulated Annealing","4 Wszystkie"};
 
     try {
         std::vector<std::string> argument(argv, argv + argc);
         auto selected_f = argument.at(1);
 
-        switch(std::stoi(argument.at(1))){
+        int temp = std::stoi(argument.at(1));
+        switch(temp){
             case 1:
                 std::cout<<"Hill Climb"<<std::endl;
                 hillClimbCout();
@@ -170,6 +172,14 @@ int main(int argc, char **argv) {
                 bruteForceCout();
                 break;
             case 3:
+                std::cout<<"Simulated Annealing"<<std::endl;
+                simulatedAnnealingCout();
+                break;
+            case 4:
+                std::cout<<"Hill Climb"<<std::endl;
+                hillClimbCout();
+                std::cout<<"Brute Force"<<std::endl;
+                bruteForceCout();
                 std::cout<<"Simulated Annealing"<<std::endl;
                 simulatedAnnealingCout();
                 break;
