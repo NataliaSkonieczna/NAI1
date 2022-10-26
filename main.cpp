@@ -21,7 +21,7 @@ using std::chrono::milliseconds;
 
 double hill_climbing(std::function<double(double, double)> &f,domain_t minimal_d, domain_t maximal_d, int max_iterations) {
 
-    int times= max_iterations/25;
+    int times= max_iterations/1;
 
     auto t1 = high_resolution_clock::now();
     std::uniform_real_distribution<double> dist(minimal_d[0], maximal_d[0]);
@@ -39,13 +39,11 @@ double hill_climbing(std::function<double(double, double)> &f,domain_t minimal_d
             current_p = f(new_p,new_p2);
         }
 
-        if(iteration % times == 0){
-            outfile.open("file.txt",std::ios_base::app);
-            outfile << current_p << std::endl;
-            outfile.close();
-        }
     }
 
+    outfile.open("file.txt",std::ios_base::app);
+    outfile << current_p << std::endl;
+    outfile.close();
     auto t2 = high_resolution_clock::now();
     auto ms_int = duration_cast<milliseconds>(t2 - t1);
     duration<double, std::milli> ms_double = t2 - t1;
@@ -57,7 +55,7 @@ double hill_climbing(std::function<double(double, double)> &f,domain_t minimal_d
 
 auto brute_force = [](std::function<double(double, double)> &f, domain_t minimal_d, domain_t maximal_d, int max_iterations) {
 
-    int times= max_iterations/25;
+    int times= max_iterations/1;
 
     auto t1 = high_resolution_clock::now();
     std::uniform_real_distribution<double> dist(minimal_d[0], maximal_d[0]);
@@ -72,15 +70,11 @@ auto brute_force = [](std::function<double(double, double)> &f, domain_t minimal
             }
             current_p = dist(mt_generator);
             current_p2 = dist(mt_generator);
-
-            if(iterations % times == 0) {
-                outfile2.open("file2.txt", std::ios_base::app);
-                outfile2 << best_point << std::endl;
-                outfile2.close();
-            }
-
         }
 
+    outfile2.open("file2.txt", std::ios_base::app);
+    outfile2 << best_point << std::endl;
+    outfile2.close();
     auto t2 = high_resolution_clock::now();
     auto ms_int = duration_cast<milliseconds>(t2 - t1);
     duration<double, std::milli> ms_double = t2 - t1;
@@ -91,7 +85,7 @@ auto brute_force = [](std::function<double(double, double)> &f, domain_t minimal
 
 double simulatedAnnealing(std::function<double(double, double)> &f,domain_t minimal_d, domain_t maximal_d, int max_iterations) {
 
-    int times= max_iterations/25;
+    int times= max_iterations/1;
 
     auto t1 = high_resolution_clock::now();
 
@@ -119,13 +113,12 @@ double simulatedAnnealing(std::function<double(double, double)> &f,domain_t mini
             }
         }
 
-        if(iterations % times == 0) {
-            outfile3.open("file3.txt", std::ios_base::app);
-            outfile3 << s << std::endl;
-            outfile3.close();
-        }
-
     }
+
+    outfile3.open("file3.txt", std::ios_base::app);
+    outfile3 << s << std::endl;
+    outfile3.close();
+
     for(int j=0;myvec.size()>=j;j++) {
             if (myvec[j] < s) {
                 s = myvec[j];
