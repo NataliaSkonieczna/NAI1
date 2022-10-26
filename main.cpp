@@ -56,6 +56,8 @@ double hill_climbing(std::function<double(double, double)> &f,domain_t minimal_d
 
 auto brute_force = [](std::function<double(double, double)> &f, domain_t minimal_d, domain_t maximal_d, int max_iterations) {
 
+    int times= max_iterations/1;
+
     auto t1 = high_resolution_clock::now();
     std::uniform_real_distribution<double> dist(minimal_d[0], maximal_d[0]);
 
@@ -63,21 +65,33 @@ auto brute_force = [](std::function<double(double, double)> &f, domain_t minimal
     auto current_p2 = dist(mt_generator);
     auto best_point = f(current_p,current_p2);
 
-        for(int i=0;i<max_iterations;i++) {
+        for(int iterations=0;iterations<max_iterations;iterations++) {
             if (f(current_p,current_p2) < best_point) {
                 best_point = f(current_p,current_p2);
             }
             current_p = dist(mt_generator);
             current_p2 = dist(mt_generator);
+
+            if(iterations % times == 0) {
+                auto t2 = high_resolution_clock::now();
+                auto ms_int = duration_cast<milliseconds>(t2 - t1);
+                duration<double, std::milli> ms_double = t2 - t1;
+                std::cout << std::endl << "time = " << ms_double.count() << "ms\n";
+                outfile.open("file.txt", std::ios_base::app);
+                outfile << ms_double.count() << " " << current_p << std::endl;
+                outfile.close();
+            }
+
         }
-    auto t2 = high_resolution_clock::now();
-    auto ms_int = duration_cast<milliseconds>(t2 - t1);
-    duration<double, std::milli> ms_double = t2 - t1;
-    std::cout << std::endl << "time = " << ms_double.count() << "ms\n";
+
+
+    std::cout << "best x = ";
     return best_point;
 };
 
 double simulatedAnnealing(std::function<double(double, double)> &f,domain_t minimal_d, domain_t maximal_d, int max_iterations) {
+
+    int times= max_iterations/1;
 
     auto t1 = high_resolution_clock::now();
 
@@ -116,6 +130,7 @@ double simulatedAnnealing(std::function<double(double, double)> &f,domain_t mini
     auto ms_int = duration_cast<milliseconds>(t2 - t1);
     duration<double, std::milli> ms_double = t2 - t1;
     std::cout << std::endl << "time = " << ms_double.count() << "ms\n";
+    std::cout << "best x = ";
     return s;
 }
 
