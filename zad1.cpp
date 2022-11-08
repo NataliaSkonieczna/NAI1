@@ -1,54 +1,65 @@
-//
-// Created by s22785 on 05.10.2022.
-//
-
-#include <functional>
 #include <iostream>
-#include <map>
-#include <string>
 #include <vector>
-#include <cmath>
-
-using my_fun = std::function<double(std::vector<double>)>;
-
-void lab1(std::vector<double> num, my_fun fun){
+#include <functional>
+#include <random>
+std::random_device rd;
+std::mt19937 mt_generator(rd());
+auto genetic_algorithm = [](
+        auto initial_population, auto fitness, auto term_condition,
+        auto selection, double p_crossover,
+        auto crossover, double p_mutation,  auto mutation) {
     using namespace std;
-        cout << fun(num) << endl;
-}
-
-int main(int argc, char **argv) {
-    using namespace std;
-    map<int, int> map1 = {{}};
-    map<string, my_fun> format;
-    format["add"] = [](vector<double> num) { return num.front() + num.back(); };
-    format["mod"] = [](vector<double> num) { return (int)num.front() % (int)num.back(); };
-    format["sin"] = [](vector<double> num) { return sin(num.front()); };
-
-
-    try {
-        vector<string> argument(argv, argv + argc);
-        auto selected_f = argument.at(2);
-        if(argument.size() > 5){
-            cout << "za wiele argumentow" <<endl;
-            return 1;
+    uniform_real_distribution<double> uniform(0.0,1.0);
+    auto population = initial_population;
+    vector<double> population_fit = fitness(population);
+    while (!term_condition(population,population_fit)) {
+        auto parents_indexes = selection(population_fit);
+        decltype(population) new_population;
+        for (int i = 0 ; i < parents_indexes.size(); i+=2) {
+            decltype(initial_population) offspring = {population[i],population[i+1]};
+            if (uniform(mt_generator) < p_crossover) {
+                offspring = crossover(offspring);
+            }
+            for (auto chromosome : offspring) new_population.push_back(chromosome);
         }
-        else if(selected_f == "sin" && argument.size() > 4){
-            cout << "za wiele argumentow" <<endl;
-            return 1;
+        for (auto & chromosome : new_population) {
+            chromosome = mutation(chromosome,p_mutation);
         }
-        else if(argument.at(1)!="lab1"){
-            cout << "na poczatku powinno pojawic sie 'lab1'" <<endl;
-            return 1;
-        }
-
-        vector<double> num = {{stod(argument.at(3)), stod(argument.back())}};
-        lab1(num, format.at(selected_f));
-    } catch (std::out_of_range aor) {
-        cout << "podaj argument. Dostepne to: ";
-        for (auto [k, v] : format) cout <<endl << " " << k;
-        cout << endl;
+        population = new_population;
+        population_fit = fitness(population);
     }
-    return 0;
-
+    return population;
+};
+using chromosome_t = std::vector<int>;
+using population_t = std::vector<chromosome_t>;
+std::vector<double> fintess_function(population_t pop){
+    return {};
 }
-
+std::vector<int> selection_empty(std::vector<double> fitnesses) {
+    return {};
+}
+std::vector<chromosome_t > crossover_empty(std::vector<chromosome_t > parents) {
+    return parents;
+}
+chromosome_t mutation_empty(chromosome_t parents, double p_mutation) {
+    return parents;
+}
+int main() {
+    using namespace std;
+    population_t population = {{1,0,1,0,1,0,1}, {1,0,1,0,1,0,1}};
+    auto result = genetic_algorithm(population,
+                                    fintess_function,
+                                    [](auto a, auto b){return true;},
+                                    selection_empty, 1.0,
+                                    crossover_empty,
+                                    0.01, mutation_empty);
+    for (chromosome_t chromosome: result) {
+        cout << "[";
+        for (int p: chromosome) {
+            cout << p;
+        }
+        cout << "] ";
+    }
+    cout << endl;
+    return 0;
+}
