@@ -4,7 +4,7 @@
 #include <random>
 std::random_device rd;
 std::mt19937 mt_generator(rd());
-using myfun = std::function<double(double, double)>;
+using myfun = std::function<double(std::pair<double, double>)>;
 
 auto genetic_algorithm = [](
         auto initial_population, auto fitness, auto term_condition,
@@ -65,13 +65,10 @@ population_t populate (int size, int chromLen){
 
 std::vector<double> fintess_function(population_t pop,myfun fun){
     std::vector<double> result;
-    std::pair<double,double> pair;
+    std::pair<double,double> vec;
     for (int i; i<pop.size();i++){
-        pair = translate(pop[i]);
-        result = fun(pair);
-    }
-    for(double p:result) {
-        std::cout << p;
+        vec = translate(pop[i]);
+        std::cout<<fun(vec);
     }
     return {result};
 }
@@ -88,14 +85,14 @@ chromosome_t mutation_empty(chromosome_t parents, double p_mutation) {
 }
 int main() {
 
-    std::function<double(double, double)> beale = [](double x, double y) {
-        return pow(1.5 - x + (x * y), 2) + pow(2.25 - x + x * pow(y, 2), 2) + pow(2.625 - x + (x * pow(y, 3)), 2);
+    std::function<double(std::pair<double, double>)> beale = [](std::pair<double, double> xy) {
+        return pow(1.5 - xy.first + (xy.first * xy.second), 2) + pow(2.25 - xy.first + xy.first * pow(xy.first, 2), 2) + pow(2.625 - xy.first + (xy.first * pow(xy.second, 3)), 2);
     };
-    std::function<double(double, double)> cross = [](double x, double y) {
-        return -0.0001*(pow((fabs(sin(x)*sin(y)*exp(fabs(100-(sqrt(pow(x,2)+pow(y,2)))/M_PI))+1)),0.1));
+    std::function<double(std::pair<double, double>)> cross = [](std::pair<double, double> xy) {
+        return -0.0001*(pow((fabs(sin(xy.first)*sin(xy.second)*exp(fabs(100-(sqrt(pow(xy.first,2)+pow(xy.second,2)))/M_PI))+1)),0.1));
     };
-    std::function<double(double, double)> himmelblau = [](double x, double y) {
-        return pow(pow(x,2)+y-11,2)+pow(x+pow(y,2)-7,2);
+    std::function<double(std::pair<double, double>)> himmelblau = [](std::pair<double, double> xy) {
+        return pow(pow(xy.first,2)+xy.second-11,2)+pow(xy.first+pow(xy.second,2)-7,2);
     };
 
     using namespace std;
