@@ -96,7 +96,7 @@ int main() {
     };
 
     using namespace std;
-    population_t population = populate(100,100+((22785%10)*2));
+    population_t population = populate(10000,100+((22785%10)*2));
     auto result = genetic_algorithm(population,
                                     fintess_function,
                                     [](auto a, auto b){return true;},
