@@ -9,11 +9,11 @@ using myfun = std::function<double(double, double)>;
 auto genetic_algorithm = [](
         auto initial_population, auto fitness, auto term_condition,
         auto selection, double p_crossover,
-        auto crossover, double p_mutation,  auto mutation) {
+        auto crossover, double p_mutation,  auto mutation, auto myfun) {
     using namespace std;
     uniform_real_distribution<double> uniform(0.0,1.0);
     auto population = initial_population;
-    vector<double> population_fit = fitness(population);
+    vector<double> population_fit = fitness(population,myfun);
     while (!term_condition(population,population_fit)) {
         auto parents_indexes = selection(population_fit);
         decltype(population) new_population;
@@ -28,7 +28,7 @@ auto genetic_algorithm = [](
             chromosome = mutation(chromosome,p_mutation);
         }
         population = new_population;
-        population_fit = fitness(population);
+        population_fit = fitness(population,myfun);
     }
     return population;
 };
@@ -63,10 +63,17 @@ population_t populate (int size, int chromLen){
     return population1;
 }
 
-std::vector<double> fintess_function(population_t pop){
-
-
-    return {};
+std::vector<double> fintess_function(population_t pop,myfun fun){
+    std::vector<double> result;
+    std::pair<double,double> pair;
+    for (int i; i<pop.size();i++){
+        pair = translate(pop[i]);
+        result = fun(pair);
+    }
+    for(double p:result) {
+        std::cout << p;
+    }
+    return {result};
 }
 
 
@@ -98,7 +105,7 @@ int main() {
                                     [](auto a, auto b){return true;},
                                     selection_empty, 1.0,
                                     crossover_empty,
-                                    0.01, mutation_empty);
+                                    0.01, mutation_empty, beale);
     /*for (chromosome_t chromosome: result) {
         cout << "[";
         for (int p: chromosome) {
@@ -106,7 +113,6 @@ int main() {
         }
         cout << "] ";
     }*/
-
-    cout << endl;
+    fintess_function(population,beale);
     return 0;
 }
