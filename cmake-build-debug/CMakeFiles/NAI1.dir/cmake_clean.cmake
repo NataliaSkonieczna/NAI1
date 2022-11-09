@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/NAI1.dir/zad1.cpp.obj"
-  "CMakeFiles/NAI1.dir/zad1.cpp.obj.d"
+  "CMakeFiles/NAI1.dir/main.cpp.obj"
+  "CMakeFiles/NAI1.dir/main.cpp.obj.d"
   "NAI1.exe"
   "NAI1.exe.manifest"
   "NAI1.pdb"

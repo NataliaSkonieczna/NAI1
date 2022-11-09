@@ -39,7 +39,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "NAI1::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-NAI1-Debug-601baa609fd5223e6c3d.json",
+					"jsonFile" : "target-NAI1-Debug-b140fed3bd388f7fe5df.json",
 					"name" : "NAI1",
 					"projectIndex" : 0
 				}
@@ -49,12 +49,12 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "E:/github/NAI1/cmake-build-debug",
-		"source" : "E:/github/NAI1"
+		"build" : "C:/Users/s22785/Documents/GitHub/NAI1/cmake-build-debug",
+		"source" : "C:/Users/s22785/Documents/GitHub/NAI1"
 	},
 	"version" : 
 	{
 		"major" : 2,
-		"minor" : 3
+		"minor" : 4
 	}
 }
