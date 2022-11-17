@@ -97,7 +97,7 @@ std::vector<chromosome_t > crossover_empty(std::vector<chromosome_t > parents) {
 }
 chromosome_t mutation_empty(chromosome_t parents, double p_mutation) {
     std::uniform_real_distribution<> randNum(0,1);
-    std::uniform_real_distribution<> randQuan(0,5);
+    std::uniform_real_distribution<> randQuan(0,8);
     std::uniform_real_distribution<> randPoint(0,parents.size());
     int Quantity = randQuan(mt_generator);
     if(randNum(mt_generator)<p_mutation){
