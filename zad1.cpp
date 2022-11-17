@@ -2,18 +2,20 @@
 #include <vector>
 #include <functional>
 #include <random>
+#include <map>
 std::random_device rd;
 std::mt19937 mt_generator(rd());
 using myfun = std::function<double(std::pair<double, double>)>;
+using car = std::function<double>;
 
 auto genetic_algorithm = [](
         auto initial_population, auto fitness, auto term_condition,
         auto selection, double p_crossover,
-        auto crossover, double p_mutation,  auto mutation, auto myfun) {
+        auto crossover, double p_mutation,  auto mutation, auto myfun, auto domain) {
     using namespace std;
     uniform_real_distribution<double> uniform(0.0,1.0);
     auto population = initial_population;
-    vector<double> population_fit = fitness(population,myfun);
+    vector<double> population_fit = fitness(population,myfun,domain);
     while (!term_condition(population,population_fit)) {
         auto parents_indexes = selection(population_fit);
         decltype(population) new_population;
@@ -28,7 +30,7 @@ auto genetic_algorithm = [](
             chromosome = mutation(chromosome,p_mutation);
         }
         population = new_population;
-        population_fit = fitness(population,myfun);
+        population_fit = fitness(population,myfun,domain);
     }
     return population;
 };
@@ -58,21 +60,27 @@ population_t populate (int size, int chromLen){
         for(int j=0; j<chromLen;j++){
             chromosome.push_back(rand()%2);
         }
-       population1.push_back(chromosome);
+        population1.push_back(chromosome);
     }
     return population1;
 }
 
-std::vector<double> fintess_function(population_t pop,myfun fun){
-    std::vector<double> result;
-    std::pair<double,double> vec;
-    for (int i; i<pop.size();i++){
+std::vector<double> fintess_function(population_t pop,myfun fun,std::vector<double> domain) {
+    std::vector<double> temp;
+    std::pair<double, double> vec;
+    for (int i; i < pop.size(); i++) {
         vec = translate(pop[i]);
-        std::cout<<fun(vec);
+        if (vec.first > domain.at(0) && vec.second > domain.at(0) && vec.first < domain.at(1) &&
+            vec.second < domain.at(1)) {
+            temp.push_back(fun(vec));
+        }
+        else{}
     }
-    return {result};
+    for (double d: temp) {
+            std::cout << d << std::endl;
+        return temp;
+    }
 }
-
 
 std::vector<int> selection_empty(std::vector<double> fitnesses) {
     return {};
@@ -85,6 +93,8 @@ chromosome_t mutation_empty(chromosome_t parents, double p_mutation) {
 }
 int main() {
 
+    std::map<std::string, std::vector<double>> domain;
+
     std::function<double(std::pair<double, double>)> beale = [](std::pair<double, double> xy) {
         return pow(1.5 - xy.first + (xy.first * xy.second), 2) + pow(2.25 - xy.first + xy.first * pow(xy.first, 2), 2) + pow(2.625 - xy.first + (xy.first * pow(xy.second, 3)), 2);
     };
@@ -95,14 +105,18 @@ int main() {
         return pow(pow(xy.first,2)+xy.second-11,2)+pow(xy.first+pow(xy.second,2)-7,2);
     };
 
+    domain["beale"] = {-4.5,4.5};
+    domain["cross"] = {-10,10};
+    domain["himmelblau"] = {-5,5};
+
     using namespace std;
-    population_t population = populate(10000,100+((22785%10)*2));
+    population_t population = populate(100,100+((22785%10)*2));
     auto result = genetic_algorithm(population,
                                     fintess_function,
                                     [](auto a, auto b){return true;},
                                     selection_empty, 1.0,
                                     crossover_empty,
-                                    0.01, mutation_empty, beale);
+                                    0.01, mutation_empty, beale,domain["beale"]);
     /*for (chromosome_t chromosome: result) {
         cout << "[";
         for (int p: chromosome) {
@@ -110,6 +124,6 @@ int main() {
         }
         cout << "] ";
     }*/
-    fintess_function(population,beale);
+    fintess_function(population,beale,domain["beale"]);
     return 0;
 }
