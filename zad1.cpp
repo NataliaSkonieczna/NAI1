@@ -44,11 +44,11 @@ std::pair<double,double> translate(chromosome_t chromosome,std::vector<double> d
     double y = 0.0;
 
     for (int i = 1; i < size / 2; i++) {
-        x += chromosome[i] * (1 / pow(2, i));
+        x += chromosome[i] * pow(2, -i);
     }
 
     for (int i = size / 2 + 1; i < size; i++) {
-        y += chromosome[i] * (1 / pow(2, i - (size / 2)));
+        y += chromosome[i] * pow(2, -(i - (size / 2)));
     }
 
     if (chromosome[0] == 1) {
