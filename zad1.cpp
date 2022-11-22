@@ -38,27 +38,36 @@ auto genetic_algorithm = [](
 using chromosome_t = std::vector<int>;
 using population_t = std::vector<chromosome_t>;
 
-std::pair<double,double> translate(chromosome_t chromosome){
+std::pair<double,double> translate(chromosome_t chromosome,std::vector<double> domain){
     int size = chromosome.size();
     double x = 0.0;
     double y = 0.0;
 
-    for(int i=0;i<size/2;i++){
-        x = x+ (chromosome[i]*pow(2,i));
-    }
-    for(int j=size/2; j<size;j++){
-        y=y+(chromosome[j]*pow(2,j));
+    for (int i = 1; i < size / 2; i++) {
+        x += chromosome[i] * (1 / pow(2, i));
     }
 
-    return{x,y};
+    for (int i = size / 2 + 1; i < size; i++) {
+        y += chromosome[i] * (1 / pow(2, i - (size / 2)));
+    }
+
+    if (chromosome[0] == 1) {
+        x = -1.0;
+    }
+    if (chromosome[size / 2] == 1) {
+        y= -1.0;
+    }
+
+    return{x*std::abs(domain[0]),y*std::abs(domain[1])};
 }
 
 population_t populate (int size, int chromLen){
     population_t population1;
+    std::uniform_int_distribution<int> rnd(0, 1);
     for(int i=0; i<size ;i++){
         chromosome_t chromosome;
         for(int j=0; j<chromLen;j++){
-            chromosome.push_back(rand()%2);
+            chromosome.push_back(rnd(mt_generator));
         }
         population1.push_back(chromosome);
     }
@@ -68,39 +77,39 @@ population_t populate (int size, int chromLen){
 std::vector<double> fintess_function(population_t pop,myfun fun,std::vector<double> domain) {
     std::vector<double> temp;
     std::pair<double, double> vec;
-    for (int i; i < pop.size(); i++) {
-        vec = translate(pop[i]);
+    for (int i=0; i < pop.size(); i++) {
+        vec = translate(pop[i],domain);
         if (vec.first > domain.at(0) && vec.second > domain.at(0) && vec.first < domain.at(1) &&
             vec.second < domain.at(1)) {
             temp.push_back(fun(vec));
         }
-        else{}
     }
     for (double d: temp) {
-            std::cout << d << std::endl;
+         std::cout << d << std::endl;
+    }
         return temp;
     }
-}
 
 std::vector<int> selection_empty(std::vector<double> fitnesses) {
     double S=0;
     double P=0;
-    double c=0;
-    double cend=0;
+    double P1=0;
+    double pi=0;
+    double pi1=0;
     std::vector<int> vec;
-    std::uniform_real_distribution<> rand(0,1);
-    double R = rand(mt_generator);
+    std::uniform_real_distribution<> rnd(0,1);
+    double R = rnd(mt_generator);
 
     for(int e : fitnesses){
         S+=e;
     }
     for (int i = 0; i < fitnesses.size(); i++) {
-        c = fitnesses.at(i) / S;
-        c = cend + c;
-        if(cend <= R && cend <= P){
+        pi = fitnesses.at(i) / S;
+        P = P1 + pi;
+        if(P1 <= R && pi1 <= P){
             vec.push_back(i);
         }
-        cend = P;
+        P1 = P;
     }
     return vec;
 }
@@ -147,25 +156,36 @@ int main() {
 
     using namespace std;
     population_t population = populate(100,100+((22785%10)*2));
+
     try {
         auto result = genetic_algorithm(population,
                                         fintess_function,
-                                        [](auto a, auto b) { return true; },
+                                        [](auto a, auto b) {
+                                            for (auto count: b) {
+                                                if(count > 99){
+                                                    return true;
+                                                }
+                                            }
+                                            return false;
+                                        },
                                         selection_empty, 1.0,
                                         crossover_empty,
-                                        0.01, mutation_empty, cross, domain["cross"]);
+                                        0.01, mutation_empty, himmelblau, domain["himmelblau"]);
 
-        /*for (chromosome_t chromosome: result) {
+        for (chromosome_t chromosome: result) {
             cout << "[";
             for (int p: chromosome) {
                 cout << p;
             }
-            cout << "] ";
-        }*/
+            cout << "] " << endl;
+        }
+
     }
+
     catch(std::out_of_range aor) {
         return 1;
     }
-    fintess_function(population,cross,domain["cross"]);
+
+
     return 0;
 }
