@@ -81,7 +81,7 @@ std::vector<double> fintess_function(population_t pop,myfun fun,std::vector<doub
         vec = translate(pop[i],domain);
         if (vec.first > domain.at(0) && vec.second > domain.at(0) && vec.first < domain.at(1) &&
             vec.second < domain.at(1)) {
-            temp.push_back(fun(vec));
+            temp.push_back(1000 - fun(vec));
         }
     }
     for (double d: temp) {
@@ -162,7 +162,7 @@ int main() {
                                         fintess_function,
                                         [](auto a, auto b) {
                                             for (auto count: b) {
-                                                if(count > 99){
+                                                if(count > 950){
                                                     return true;
                                                 }
                                             }
