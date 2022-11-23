@@ -83,6 +83,7 @@ std::vector<double> fintess_function(population_t pop,myfun fun,std::vector<doub
             vec.second < domain.at(1)) {
             temp.push_back(1000 - fun(vec));
         }
+        //else
     }
     for (double d: temp) {
          std::cout << d << std::endl;
@@ -125,13 +126,13 @@ std::vector<chromosome_t > crossover_empty(std::vector<chromosome_t > parents) {
 }
 chromosome_t mutation_empty(chromosome_t parents, double p_mutation) {
     std::uniform_real_distribution<> randNum(0,1);
-    std::uniform_real_distribution<> randQuan(0,8);
-    std::uniform_real_distribution<> randPoint(0,parents.size());
-    int Quantity = randQuan(mt_generator);
-    if(randNum(mt_generator)<p_mutation){
-        for(int i = Quantity ; i>0 ; i--){
-            int temp = randPoint(mt_generator);
-            parents.at(temp) = randNum(mt_generator);
+    for(int i = 0 ; i < parents.size() ; i++){
+        if(randNum(mt_generator)<p_mutation){
+            if(parents.at(i) == 0){
+                parents.at(i) = 1;
+            } else{
+                parents.at(i) = 0;
+            }
         }
     }
     return parents;
