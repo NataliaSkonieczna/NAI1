@@ -159,14 +159,15 @@ std::vector<chromosome_t > crossover_empty(std::vector<chromosome_t > parents) {
     return parents;
 }
 chromosome_t mutation_empty(chromosome_t parents, double p_mutation) {
-    std::uniform_real_distribution<> randNum(0,1);
-    std::uniform_real_distribution<> randQuan(0,8);
     std::uniform_real_distribution<> randPoint(0,parents.size());
-    int Quantity = randQuan(mt_generator);
-    if(randNum(mt_generator)<p_mutation){
-        for(int i = Quantity ; i>0 ; i--){
-            int temp = randPoint(mt_generator);
-            parents.at(temp) = randNum(mt_generator);
+    int Quantity = randPoint(mt_generator);
+    for(int i = Quantity ; i>0 ; i--){
+    if(randPoint(mt_generator)<p_mutation){
+            if(parents.at(i)==0){
+                parents.at(i)=1;
+            }else{
+                parents.at(i)=0;
+            }
         }
     }
     return parents;
@@ -222,7 +223,7 @@ int main(int argc, char **argv) {
     }*/
 
 
-
+    try {
         std::vector<std::string> argument(argv, argv + argc);
         auto popSize = argument.at(1);
         auto iterations = argument.at(2);
@@ -245,7 +246,9 @@ int main(int argc, char **argv) {
                                         crossover_empty,
                                         stod(mutPoss), mutation_empty, himmelblau, domain["himmelblau"],stoi(iterations),print2);
 
-
+    } catch (std::out_of_range aor) {
+        std::cout << "out of range "<<std::endl;
+    }
 
 
 
