@@ -23,7 +23,7 @@ std::vector<double> populationCheck(std::vector<double> fitness){
         }
     }
 
-    double avg = temp / fitness.size();
+    double avg = temp/fitness.size();
 
     std::vector<double> populationCheck;
 
@@ -37,27 +37,30 @@ std::vector<double> populationCheck(std::vector<double> fitness){
 auto genetic_algorithm = [](
         auto initial_population, auto fitness, auto term_condition,
         auto selection, double p_crossover,
-        auto crossover, double p_mutation,  auto mutation, auto myfun, auto domain,int iteration) {
+        auto crossover, double p_mutation,  auto mutation, auto myfun, auto domain,int iteration,bool print) {
     using namespace std;
     uniform_real_distribution<double> uniform(0.0,1.0);
     auto population = initial_population;
-    vector<double> population_fit = fitness(population,myfun,domain,true);
-    while (!term_condition(population,population_fit,iteration)) {
-        auto parents_indexes = selection(population_fit);
-        decltype(population) new_population;
-        for (int i = 0 ; i < parents_indexes.size(); i+=2) {
-            decltype(initial_population) offspring = {population[i],population[i+1]};
-            if (uniform(mt_generator) < p_crossover) {
-                offspring = crossover(offspring);
+    vector<double> population_fit = fitness(population,myfun,domain,print,iteration);
+    while (!term_condition(population,population_fit)) {
+        while (iteration>0) {
+            std::cout<< "ITERACJE : " << iteration<< std::endl;
+            auto parents_indexes = selection(population_fit);
+            decltype(population) new_population;
+            for (int i = 0; i < parents_indexes.size(); i += 2) {
+                decltype(initial_population) offspring = {population[i], population[i + 1]};
+                if (uniform(mt_generator) < p_crossover) {
+                    offspring = crossover(offspring);
+                }
+                for (auto chromosome: offspring) new_population.push_back(chromosome);
             }
-            for (auto chromosome : offspring) new_population.push_back(chromosome);
+            for (auto &chromosome: new_population) {
+                chromosome = mutation(chromosome, p_mutation);
+            }
+            population = new_population;
+            population_fit = fitness(population, myfun, domain, print, iteration);
+            iteration--;
         }
-        for (auto & chromosome : new_population) {
-            chromosome = mutation(chromosome,p_mutation);
-        }
-        population = new_population;
-        population_fit = fitness(population,myfun,domain,true);
-        iteration++;
     }
     return population;
 };
@@ -101,7 +104,7 @@ population_t populate (int size, int chromLen){
     return population1;
 }
 
-std::vector<double> fintess_function(population_t pop,myfun fun,std::vector<double> domain,bool check) {
+std::vector<double> fintess_function(population_t pop,myfun fun,std::vector<double> domain,bool print, int iterations) {
     std::vector<double> temp;
     std::pair<double, double> vec;
     for (int i=0; i < pop.size(); i++) {
@@ -114,11 +117,11 @@ std::vector<double> fintess_function(population_t pop,myfun fun,std::vector<doub
     for (double d: temp) {
          std::cout << d << std::endl;
     }
-    if (check = true){
-        std::vector<double> print = populationCheck(temp);
-        std::cout << "min: " << print.at(0) << std::endl;
-        std::cout << "max: " << print.at(1) << std::endl;
-        std::cout << "avg: " << print.at(2) << std::endl;
+    if (print){
+        std::vector<double> printPop = populationCheck(temp);
+        std::cout << "min: " << printPop.at(0) << std::endl;
+        std::cout << "max: " << printPop.at(1) << std::endl;
+        std::cout << "avg: " << printPop.at(2) << std::endl;
     }
         return temp;
     }
@@ -226,10 +229,18 @@ int main(int argc, char **argv) {
         auto iterations = argument.at(2);
         auto crossPoss = argument.at(3);
         auto mutPoss = argument.at(4);
+        auto print = argument.at(5);
+        bool print2 = false;
+
+        if (print == "true"){
+            print2 = true;
+        }if(print == "false"){
+            print2 = false;
+        }
 
         population_t population2 = populate(stoi(popSize),100+((22785%10)*2));
 
-        auto result = genetic_algorithm(population2,fintess_function,[](auto a, auto b,auto c) {
+        auto result = genetic_algorithm(population2,fintess_function,[](auto a, auto b) {
                                             for (auto count: b) {
                                                 if(count > 950){
                                                     return true;
@@ -238,18 +249,10 @@ int main(int argc, char **argv) {
                                             return false;
                                         },selection_empty, stod(crossPoss),
                                         crossover_empty,
-                                        stod(mutPoss), mutation_empty, himmelblau, domain["himmelblau"],stoi(iterations));
-
-        for (chromosome_t chromosome: result) {
-            cout << "[";
-            for (int p: chromosome) {
-                cout << p;
-            }
-            cout << "] " << endl;
-        }
+                                        stod(mutPoss), mutation_empty, himmelblau, domain["himmelblau"],stoi(iterations),print2);
 
     } catch (std::out_of_range aor) {
-        std::cout << "bledne informacje "<<std::endl;
+        std::cout << "out of range "<<std::endl;
     }
 
 
