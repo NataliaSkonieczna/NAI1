@@ -8,6 +8,32 @@ std::mt19937 mt_generator(rd());
 using myfun = std::function<double(std::pair<double, double>)>;
 using car = std::function<double>;
 
+std::vector<double> populationCheck(std::vector<double> fitness){
+    double min = fitness.at(0);
+    double max = 0;
+    double temp = 0;
+
+    for (auto fit : fitness){
+        temp = temp + fit;
+        if(fit > max){
+            max = fit;
+        }
+        if (fit < min){
+            min = fit;
+        }
+    }
+
+    double avg = temp / fitness.size();
+
+    std::vector<double> populationCheck;
+
+    populationCheck.push_back(min);
+    populationCheck.push_back(max);
+    populationCheck.push_back(avg);
+
+    return populationCheck;
+}
+
 auto genetic_algorithm = [](
         auto initial_population, auto fitness, auto term_condition,
         auto selection, double p_crossover,
@@ -15,7 +41,7 @@ auto genetic_algorithm = [](
     using namespace std;
     uniform_real_distribution<double> uniform(0.0,1.0);
     auto population = initial_population;
-    vector<double> population_fit = fitness(population,myfun,domain);
+    vector<double> population_fit = fitness(population,myfun,domain,true);
     while (!term_condition(population,population_fit,iteration)) {
         auto parents_indexes = selection(population_fit);
         decltype(population) new_population;
@@ -30,7 +56,7 @@ auto genetic_algorithm = [](
             chromosome = mutation(chromosome,p_mutation);
         }
         population = new_population;
-        population_fit = fitness(population,myfun,domain);
+        population_fit = fitness(population,myfun,domain,true);
         iteration++;
     }
     return population;
@@ -75,7 +101,7 @@ population_t populate (int size, int chromLen){
     return population1;
 }
 
-std::vector<double> fintess_function(population_t pop,myfun fun,std::vector<double> domain) {
+std::vector<double> fintess_function(population_t pop,myfun fun,std::vector<double> domain,bool check) {
     std::vector<double> temp;
     std::pair<double, double> vec;
     for (int i=0; i < pop.size(); i++) {
@@ -87,6 +113,12 @@ std::vector<double> fintess_function(population_t pop,myfun fun,std::vector<doub
     }
     for (double d: temp) {
          std::cout << d << std::endl;
+    }
+    if (check = true){
+        std::vector<double> print = populationCheck(temp);
+        std::cout << "min: " << print.at(0) << std::endl;
+        std::cout << "max: " << print.at(1) << std::endl;
+        std::cout << "avg: " << print.at(2) << std::endl;
     }
         return temp;
     }
