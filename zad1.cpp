@@ -11,12 +11,12 @@ using car = std::function<double>;
 auto genetic_algorithm = [](
         auto initial_population, auto fitness, auto term_condition,
         auto selection, double p_crossover,
-        auto crossover, double p_mutation,  auto mutation, auto myfun, auto domain) {
+        auto crossover, double p_mutation,  auto mutation, auto myfun, auto domain,int iteration) {
     using namespace std;
     uniform_real_distribution<double> uniform(0.0,1.0);
     auto population = initial_population;
     vector<double> population_fit = fitness(population,myfun,domain);
-    while (!term_condition(population,population_fit)) {
+    while (!term_condition(population,population_fit,iteration)) {
         auto parents_indexes = selection(population_fit);
         decltype(population) new_population;
         for (int i = 0 ; i < parents_indexes.size(); i+=2) {
@@ -31,6 +31,7 @@ auto genetic_algorithm = [](
         }
         population = new_population;
         population_fit = fitness(population,myfun,domain);
+        iteration++;
     }
     return population;
 };
@@ -136,7 +137,7 @@ chromosome_t mutation_empty(chromosome_t parents, double p_mutation) {
     }
     return parents;
 }
-int main() {
+int main(int argc, char **argv) {
 
     std::map<std::string, std::vector<double>> domain;
 
@@ -157,7 +158,7 @@ int main() {
     using namespace std;
     population_t population = populate(100,100+((22785%10)*2));
 
-    try {
+    /*try {
         auto result = genetic_algorithm(population,
                                         fintess_function,
                                         [](auto a, auto b) {
@@ -170,7 +171,7 @@ int main() {
                                         },
                                         selection_empty, 1.0,
                                         crossover_empty,
-                                        0.01, mutation_empty, himmelblau, domain["himmelblau"]);
+                                        0.01, mutation_empty, himmelblau, domain["himmelblau"],10);
 
         for (chromosome_t chromosome: result) {
             cout << "[";
@@ -184,7 +185,43 @@ int main() {
 
     catch(std::out_of_range aor) {
         return 1;
+    }*/
+
+
+    try {
+        std::vector<std::string> argument(argv, argv + argc);
+        auto popSize = argument.at(1);
+        auto iterations = argument.at(2);
+        auto crossPoss = argument.at(3);
+        auto mutPoss = argument.at(4);
+
+        population_t population2 = populate(stoi(popSize),100+((22785%10)*2));
+
+        auto result = genetic_algorithm(population2,fintess_function,[](auto a, auto b,auto c) {
+                                            for (auto count: b) {
+                                                if(count > 950){
+                                                    return true;
+                                                }
+                                            }
+                                            return false;
+                                        },selection_empty, stod(crossPoss),
+                                        crossover_empty,
+                                        stod(mutPoss), mutation_empty, himmelblau, domain["himmelblau"],stoi(iterations));
+
+        for (chromosome_t chromosome: result) {
+            cout << "[";
+            for (int p: chromosome) {
+                cout << p;
+            }
+            cout << "] " << endl;
+        }
+
+    } catch (std::out_of_range aor) {
+        std::cout << "bledne informacje "<<std::endl;
     }
+
+
+
 
 
     return 0;
