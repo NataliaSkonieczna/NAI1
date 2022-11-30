@@ -37,13 +37,13 @@ std::vector<double> populationCheck(std::vector<double> fitness){
 auto genetic_algorithm = [](
         auto initial_population, auto fitness, auto term_condition,
         auto selection, double p_crossover,
-        auto crossover, double p_mutation,  auto mutation, auto myfun, auto domain,int iteration,bool print) {
+        auto crossover, double p_mutation,  auto mutation, auto myfun, auto domain,int maxIter,bool print) {
     using namespace std;
     uniform_real_distribution<double> uniform(0.0,1.0);
     auto population = initial_population;
+    int iteration = 0;
     vector<double> population_fit = fitness(population,myfun,domain,print,iteration);
-    while (!term_condition(population,population_fit)) {
-        while (iteration>0) {
+    while (!term_condition(population,population_fit,iteration,maxIter)) {
             std::cout<< "ITERACJE : " << iteration<< std::endl;
             auto parents_indexes = selection(population_fit);
             decltype(population) new_population;
@@ -59,8 +59,7 @@ auto genetic_algorithm = [](
             }
             population = new_population;
             population_fit = fitness(population, myfun, domain, print, iteration);
-            iteration--;
-        }
+            iteration++;
     }
     return population;
 };
@@ -113,9 +112,9 @@ std::vector<double> fintess_function(population_t pop,myfun fun,std::vector<doub
             vec.second < domain.at(1)) {
             temp.push_back(1000 - fun(vec));
         }
-    }
-    for (double d: temp) {
-         std::cout << d << std::endl;
+        else{
+            temp.push_back(0);
+        }
     }
     if (print){
         std::vector<double> printPop = populationCheck(temp);
@@ -223,7 +222,7 @@ int main(int argc, char **argv) {
     }*/
 
 
-    try {
+
         std::vector<std::string> argument(argv, argv + argc);
         auto popSize = argument.at(1);
         auto iterations = argument.at(2);
@@ -240,20 +239,13 @@ int main(int argc, char **argv) {
 
         population_t population2 = populate(stoi(popSize),100+((22785%10)*2));
 
-        auto result = genetic_algorithm(population2,fintess_function,[](auto a, auto b) {
-                                            for (auto count: b) {
-                                                if(count > 950){
-                                                    return true;
-                                                }
-                                            }
-                                            return false;
+        auto result = genetic_algorithm(population2,fintess_function,[](auto a, auto b, auto iterations, auto maxIterations) {
+                                        return iterations > maxIterations;
                                         },selection_empty, stod(crossPoss),
                                         crossover_empty,
                                         stod(mutPoss), mutation_empty, himmelblau, domain["himmelblau"],stoi(iterations),print2);
 
-    } catch (std::out_of_range aor) {
-        std::cout << "out of range "<<std::endl;
-    }
+
 
 
 
